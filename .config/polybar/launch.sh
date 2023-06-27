@@ -2,4 +2,6 @@
 
 killall -q polybar
 
-polybar &
+polybar left &
+polybar center &
+polybar right &
