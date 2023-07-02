@@ -2,6 +2,9 @@
 # wm independent hotkeys
 #
 
+super + d
+	rofi -show drun
+
 # terminal emulator
 super + Return
 	alacritty
