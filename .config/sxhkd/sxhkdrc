@@ -5,6 +5,9 @@
 super + d
 	rofi -show drun
 
+{shift + ,_} Print
+	flameshot {gui,full -c}
+
 # terminal emulator
 super + Return
 	alacritty
