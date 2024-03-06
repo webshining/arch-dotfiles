@@ -1,23 +1,14 @@
-configuration {
-    font: "JetBrains Mono Bold 12";
-    line-margin: 12;
+configuration{
+    modes: [run, drun, window];
+    font: "JetBrainsMono NF 12";
 
-    display-ssh:    "";
-    display-run:    "";
-    display-drun:   "";
-    display-window: "";
-    display-combi:  "";
-    show-icons:     false;
+    show-icons: true;
+    disable-history: false;
+    hide-scrollbar: true;
+    sidebar-mode: true;
+    display-drun: "   Apps ";
+    display-run: "   Run ";
+    display-window: "   Window ";
 }
 
-
-@theme "~/.config/rofi/nord.rasi"
-
-listview {
-	lines: 6;
-	columns: 1;
-}
-
-window {
-	width: 40%;
-}
+@theme "nord"

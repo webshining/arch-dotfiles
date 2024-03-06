@@ -1,0 +1,14 @@
+[font.bold]
+family = "JetBrainsMono NF"
+style = "Bold"
+
+[font.normal]
+family = "JetBrainsMono NF"
+style = "Regular"
+
+[window]
+opacity = 0.7
+
+[window.padding]
+x = 10
+y = 10

@@ -1,20 +1,14 @@
-#
-# wm independent hotkeys
-#
-
+# program launcher
 super + d
 	rofi -show drun
 
-{shift + ,_} Print
-	flameshot {gui,full -c}
+# screenshot
+Print
+	flameshot gui
 
 # terminal emulator
 super + Return
 	alacritty
-
-# program launcher
-super + @space
-	dmenu_run
 
 # make sxhkd reload its configuration files:
 super + Escape
