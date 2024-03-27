@@ -40,10 +40,10 @@ is_installed() {
 for d in "${dependencies[@]}"; do
     if ! is_installed "$d"; then
         if sudo pacman -S "$d" --noconfirm >/dev/null 2>> DotfilesError.log; then
-            printf "%s%s%s %shas been installed succesfully.%s\n" "${BLD}" "${TCY}" "$d" "${TCB}" "${CNC}"
+            printf "%s%s%s\t%shas been installed succesfully.%s\n" "${BLD}" "${TCY}" "$d" "${TCB}" "${CNC}"
             sleep 1
  	else
-            printf "%s%s%s %shas not been installed correctly. See %sDotfilesError.log %sfor more details.%s\n" "${BLD}" "${TCY}" "$d" "${TCR}" "${TCB}" "${TCR}" "${CNC}"
+            printf "%s%s%s\t%shas not been installed correctly. See %sDotfilesError.log %sfor more details.%s\n" "${BLD}" "${TCY}" "$d" "${TCR}" "${TCB}" "${TCR}" "${CNC}"
             sleep 1
         fi
     else
@@ -52,7 +52,7 @@ for d in "${dependencies[@]}"; do
     fi
 done
 
-sleep 2
+sleep 4
 clear
 
 ##################################################
@@ -78,7 +78,7 @@ else
     git clone --depth=1 "https://github.com/webshining/dotfiles" "$repo_dir"
 fi
 
-sleep 3
+sleep 5
 clear
 
 ##################################################
@@ -90,54 +90,58 @@ clear
 for f in bspwm sxhkd picom polybar alacritty rofi nitrogen; do
     if [ -d "$HOME/.config/$f" ]; then
         if mv "$HOME/.config/$f" "$backup_dir/" 2>> DotfilesError.log; then
-            printf "%s%s%s folder backed up successfully at %s%s%s\n" "${BLD}" "${TCG}" "$f" "${TCB}" "$backup_dir" "${CNC}"
+            printf "%s%s%s\t%sfolder backed up successfully at %s%s%s\n" "${BLD}" "${TCY}" "$f" "${TCG}" "${TCB}" "$backup_dir" "${CNC}"
             sleep 1
         else
-            printf "%s%sFailed to backup %s folder. See %sDotfilesError.log%s\n" "${BLD}" "${TCR}" "$f" "${TCB}" "${CNC}"
+            printf "%s%sFailed to backup %s%s %sfolder. See %sDotfilesError.log%s\n" "${BLD}" "${TCR}" "${TCY}" "$f" "${TCR}" "${TCB}" "${CNC}"
             sleep 1
   	fi
     else
-        printf "%s%s%s folder does not exist, %sno backup needed%s\n" "${BLD}" "${TCG}" "$f" "${TCY}" "${CNC}"
+        printf "%s%s%s\t%sfolder does not exist, %sno backup needed%s\n" "${BLD}" "${TCY}" "$f" "${TCG}" "${TCY}" "${CNC}"
         sleep 1
     fi
 done
 
-sleep 2
+sleep 4
 clear
 
 ##################################################
 # ---------------------------------------------- #
 ##################################################
 
-for f in "$HOME/dotfiles/configs/*"; do
-    if cp -R "${f}" "$HOME/.config/" 2>> DotfilesError.log; then
-        printf "%s%s%s %sconfiguration installed succesfully%s\n" "${BLD}" "${TCY}" "$f" "${TCG}" "${CNC}"
+[ ! -d "$HOME/.config" ] && mkdir -p "$HOME/.config"
+
+for f in "$HOME"/dotfiles/configs/*; do
+    dir=$(basename "$f")
+    if cp -r "$f" "$HOME/.config/" 2>> DotfilesError.log; then
+        printf "%s%s%s\t%sconfiguration installed succesfully%s\n" "${BLD}" "${TCY}" "$dir" "${TCG}" "${CNC}"
         sleep 1
     else
-        printf "%s%s%s %sconfiguration failed to been installed, see %sDotfilesError.log %sfor more details.%s\n" "${BLD}" "${TCY}" "$f" "${TCR}" "${TCB}" "${TCR}" "${CNC}"
+        printf "%s%s%s\t%sconfiguration failed to been installed, see %sDotfilesError.log %sfor more details.%s\n" "${BLD}" "${TCY}" "$f" "${TCR}" "${TCB}" "${TCR}" "${CNC}"
         sleep 1
     fi
 done
 
-for f in themes icons fonts xprofile; do
-    if cp -R "$HOME/dotfiles/${f}" "$HOME/.${f}" 2>> DotfilesError.log; then
-        printf "%s%s%s %sconfiguration installed succesfully%s\n" "${BLD}" "${TCY}" "$f" "${TCG}" "${CNC}"
+for f in "$HOME"/dotfiles/home/*; do
+    dir=$(basename "$f")
+    if cp -r "$f" "$HOME/.$dir" 2>> DotfilesError.log; then
+        printf "%s%s%s\t%sconfiguration installed succesfully%s\n" "${BLD}" "${TCY}" "$dir" "${TCG}" "${CNC}"
         sleep 1
     else
-        printf "%s%s%s %sconfiguration failed to been installed, see %sDotfilesError.log %sfor more details.%s\n" "${BLD}" "${TCY}" "$f" "${TCR}" "${TCB}" "${TCR}" "${CNC}"
+        printf "%s%s%s\t%sconfiguration failed to been installed, see %sDotfilesError.log %sfor more details.%s\n" "${BLD}" "${TCY}" "$f" "${TCR}" "${TCB}" "${TCR}" "${CNC}"
         sleep 1
     fi
 done
 
-if cp -R "$HOME/dotfiles/Pictures" "$HOME/" 2>> DotfilesError.log; then
-        printf "%s%s%s %sconfiguration installed succesfully%s\n" "${BLD}" "${TCY}" "$f" "${TCG}" "${CNC}"
-        sleep 1
-    else
-        printf "%s%s%s %sconfiguration failed to been installed, see %sDotfilesError.log %sfor more details.%s\n" "${BLD}" "${TCY}" "$f" "${TCR}" "${TCB}" "${TCR}" "${CNC}"
-        sleep 1
-    fi
+if cp -r "$f" "$HOME/.$dir" 2>> DotfilesError.log; then
+    printf "%s%s%s\t%sconfiguration installed succesfully%s\n" "${BLD}" "${TCY}" "$dir" "${TCG}" "${CNC}"
+    sleep 1
+else
+    printf "%s%s%s\t%sconfiguration failed to been installed, see %sDotfilesError.log %sfor more details.%s\n" "${BLD}" "${TCY}" "$f" "${TCR}" "${TCB}" "${TCR}" "${CNC}"
+    sleep 1
+fi
 
-sleep 2 
+sleep 4
 clear
 
 ##################################################
