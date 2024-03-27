@@ -1,0 +1,15 @@
+configuration{
+    modes: "drun,ssh";
+    font: "JetBrainsMono NF 12";
+
+    show-icons: true;
+    disable-history: false;
+    hide-scrollbar: true;
+    sidebar-mode: true;
+    display-drun: "   Apps ";
+    display-run: "   Run ";
+    display-window: "   Window ";
+    display-ssh: "   Ssh ";
+}
+
+@theme "nord"

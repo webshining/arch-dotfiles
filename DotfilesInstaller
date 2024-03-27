@@ -1,0 +1,147 @@
+#!/usr/bin/env bash
+
+##################################################
+# ---------------------------------------------- #
+##################################################
+
+TCR=$(tput setaf 1)
+TCY=$(tput setaf 3)
+TCG=$(tput setaf 2)
+TCB=$(tput setaf 4)
+BLD=$(tput bold)
+CNC=$(tput sgr0)
+
+backup_dir="$HOME/DotfilesBackup"
+
+##################################################
+# ---------------------------------------------- #
+##################################################
+
+if [ "$(id -u)" = 0 ]; then
+    echo "%s%sThis script MUST NOT be run as root user.%s\n" "${BLD}" "${TCY}" "${CNC}"
+    exit 1
+fi
+
+if [ "$HOME" != "$(pwd)" ]; then
+    printf "%s%sThe script must be executed from the HOME directory.%s\n" "${BLD}" "${TCY}" "${CNC}"
+    exit 1
+fi
+
+##################################################
+# ---------------------------------------------- #
+##################################################
+
+dependencies=(alacritty picom polybar bspwm sxhkd rofi nitrogen xorg-xsetroot sddm lxsession-gtk3 flameshot)
+
+is_installed() {
+    pacman -Q "$1" &> /dev/null
+}
+
+for d in "${dependencies[@]}"; do
+    if ! is_installed "$d"; then
+        if sudo pacman -S "$d" --noconfirm >/dev/null 2>> DotfilesError.log; then
+            printf "%s%s%s %shas been installed succesfully.%s\n" "${BLD}" "${TCY}" "$d" "${TCB}" "${CNC}"
+            sleep 1
+ 	else
+            printf "%s%s%s %shas not been installed correctly. See %sDotfilesError.log %sfor more details.%s\n" "${BLD}" "${TCY}" "$d" "${TCR}" "${TCB}" "${TCR}" "${CNC}"
+            sleep 1
+        fi
+    else
+        printf '%s%s%s %s\tis already installed on your system!%s\n' "${BLD}" "${TCY}" "$d" "${TCG}" "${CNC}"
+        sleep 1
+    fi
+done
+
+sleep 2
+clear
+
+##################################################
+# ---------------------------------------------- #
+##################################################
+
+if [ ! -f "$HOME/.config/user-dirs.dirs" ]; then
+    xdg-user-dirs-update
+fi
+
+##################################################
+# ---------------------------------------------- #
+##################################################
+
+repo_dir="$HOME/dotfiles"
+repo_url="https://github.com/webshining/dotfiles"
+
+printf "%s%sClonning dotfile from %s%s%s\n" "${BLD}" "${TCG}" "${TCY}" "$repo_url" "${CNC}"
+
+if [ -d "$repo_dir" ]; then
+    rm -rf "$repo_dir"
+else
+    git clone --depth=1 "https://github.com/webshining/dotfiles" "$repo_dir"
+fi
+
+sleep 3
+clear
+
+##################################################
+# ---------------------------------------------- #
+##################################################
+
+[ ! -d "$backup_dir" ] && mkdir -p "$backup_dir"
+
+for f in bspwm sxhkd picom polybar alacritty rofi nitrogen; do
+    if [ -d "$HOME/.config/$f" ]; then
+        if mv "$HOME/.config/$f" "$backup_dir/" 2>> DotfilesError.log; then
+            printf "%s%s%s folder backed up successfully at %s%s%s\n" "${BLD}" "${TCG}" "$f" "${TCB}" "$backup_dir" "${CNC}"
+            sleep 1
+        else
+            printf "%s%sFailed to backup %s folder. See %sDotfilesError.log%s\n" "${BLD}" "${TCR}" "$f" "${TCB}" "${CNC}"
+            sleep 1
+  	fi
+    else
+        printf "%s%s%s folder does not exist, %sno backup needed%s\n" "${BLD}" "${TCG}" "$f" "${TCY}" "${CNC}"
+        sleep 1
+    fi
+done
+
+sleep 2
+clear
+
+##################################################
+# ---------------------------------------------- #
+##################################################
+
+for f in "$HOME/dotfiles/configs/*"; do
+    if cp -R "${f}" "$HOME/.config/" 2>> DotfilesError.log; then
+        printf "%s%s%s %sconfiguration installed succesfully%s\n" "${BLD}" "${TCY}" "$f" "${TCG}" "${CNC}"
+        sleep 1
+    else
+        printf "%s%s%s %sconfiguration failed to been installed, see %sDotfilesError.log %sfor more details.%s\n" "${BLD}" "${TCY}" "$f" "${TCR}" "${TCB}" "${TCR}" "${CNC}"
+        sleep 1
+    fi
+done
+
+for f in themes icons fonts xprofile; do
+    if cp -R "$HOME/dotfiles/${f}" "$HOME/.${f}" 2>> DotfilesError.log; then
+        printf "%s%s%s %sconfiguration installed succesfully%s\n" "${BLD}" "${TCY}" "$f" "${TCG}" "${CNC}"
+        sleep 1
+    else
+        printf "%s%s%s %sconfiguration failed to been installed, see %sDotfilesError.log %sfor more details.%s\n" "${BLD}" "${TCY}" "$f" "${TCR}" "${TCB}" "${TCR}" "${CNC}"
+        sleep 1
+    fi
+done
+
+if cp -R "$HOME/dotfiles/Pictures" "$HOME/" 2>> DotfilesError.log; then
+        printf "%s%s%s %sconfiguration installed succesfully%s\n" "${BLD}" "${TCY}" "$f" "${TCG}" "${CNC}"
+        sleep 1
+    else
+        printf "%s%s%s %sconfiguration failed to been installed, see %sDotfilesError.log %sfor more details.%s\n" "${BLD}" "${TCY}" "$f" "${TCR}" "${TCB}" "${TCR}" "${CNC}"
+        sleep 1
+    fi
+
+sleep 2 
+clear
+
+##################################################
+# ---------------------------------------------- #
+##################################################
+
+sudo systemctl restart sddm
