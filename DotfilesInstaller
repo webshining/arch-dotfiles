@@ -31,7 +31,7 @@ fi
 # ---------------------------------------------- #
 ##################################################
 
-dependencies=(alacritty picom polybar bspwm sxhkd rofi nitrogen xorg-xsetroot sddm lxsession-gtk3 flameshot)
+dependencies=(alacritty picom polybar bspwm sxhkd rofi nitrogen xorg-xsetroot sddm lxsession-gtk3 flameshot xdg-user-dirs)
 
 is_installed() {
     pacman -Q "$1" &> /dev/null
@@ -110,6 +110,7 @@ clear
 ##################################################
 
 [ ! -d "$HOME/.config" ] && mkdir -p "$HOME/.config"
+[ ! -d "$HOME/Pictures/Wallpapers" ] && mkdir -p "$HOME/Pictures/Wallpapers"
 
 for f in "$HOME"/dotfiles/configs/*; do
     dir=$(basename "$f")
@@ -133,7 +134,7 @@ for f in "$HOME"/dotfiles/home/*; do
     fi
 done
 
-if cp -r "$f" "$HOME/.$dir" 2>> DotfilesError.log; then
+if cp -r "$HOME"/dotfiles/Pictures/Wallpapers/* "$HOME/Pictures/Wallpapers" 2>> DotfilesError.log; then
     printf "%s%s%s\t%sconfiguration installed succesfully%s\n" "${BLD}" "${TCY}" "$dir" "${TCG}" "${CNC}"
     sleep 1
 else
